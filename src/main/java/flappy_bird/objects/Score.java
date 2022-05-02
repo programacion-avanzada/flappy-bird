@@ -40,12 +40,9 @@ public class Score extends GameObject implements Renderable {
 		// Esto debería heredarse?
 		render.setPrefWidth(Config.baseWidth);
 
-		// XXX change everything to getResource
-		// pointAudio = new AudioClip(getClass().getResource("../../../point.wav").toExternalForm());
-		//pointAudio = new AudioClip("file:src/main/resources/sfx/point.wav");
 		pointAudio = Sound.getPointAudio();
 
-		Font font = Font.loadFont("file:src/main/resources/font/flappy-bird-numbers.ttf", 50);
+		Font font = Font.loadFont(ClassLoader.getSystemResource("font/flappy-bird-numbers.ttf").toString(), 50);
 		scoreText.setTextAlignment(TextAlignment.CENTER);
 		scoreText.setFont(font);
 		scoreText.setFill(Color.BLACK);
