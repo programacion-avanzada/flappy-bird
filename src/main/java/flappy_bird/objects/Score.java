@@ -3,6 +3,7 @@ package flappy_bird.objects;
 import flappy_bird.Config;
 import flappy_bird.interfaces.Renderable;
 import flappy_bird.utils.GameObject;
+import flappy_bird.utils.Sound;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -11,7 +12,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.VBox;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -27,7 +27,7 @@ public class Score extends GameObject implements Renderable {
 	private VBox render;
 
 	private Animation zoomAnimation;
-	private AudioClip pointAudio;
+	private Sound pointAudio;
 
 	public Score() {
 		scoreText = new Text("" + score);
@@ -42,7 +42,8 @@ public class Score extends GameObject implements Renderable {
 
 		// XXX change everything to getResource
 		// pointAudio = new AudioClip(getClass().getResource("../../../point.wav").toExternalForm());
-		pointAudio = new AudioClip("file:src/main/resources/sfx/point.wav");
+		//pointAudio = new AudioClip("file:src/main/resources/sfx/point.wav");
+		pointAudio = new Sound("sfx/point.wav");
 
 		Font font = Font.loadFont("file:src/main/resources/font/flappy-bird-numbers.ttf", 50);
 		scoreText.setTextAlignment(TextAlignment.CENTER);

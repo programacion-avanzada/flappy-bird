@@ -7,12 +7,12 @@ import flappy_bird.interfaces.Renderable;
 import flappy_bird.interfaces.Updatable;
 import flappy_bird.utils.GameObject;
 import flappy_bird.utils.IndividualSpriteAnimation;
+import flappy_bird.utils.Sound;
 import flappy_bird.utils.Utils;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -43,9 +43,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	private Image imageUp;
 	private Image imageDown;
 	
-	private AudioClip dieAudio;
-	private AudioClip hitAudio;
-	private AudioClip wingAudio;
+	private Sound dieAudio;
+	private Sound hitAudio;
+	private Sound wingAudio;
 
 	private ImageView render;
 
@@ -99,9 +99,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	}
 	
 	private void initAudios() {
-		dieAudio = new AudioClip("file:src/main/resources/sfx/die.wav");
-		hitAudio = new AudioClip("file:src/main/resources/sfx/hit.wav");
-		wingAudio = new AudioClip("file:src/main/resources/sfx/wing.wav");
+		dieAudio = new Sound("sfx/die.wav");
+		hitAudio = new Sound("sfx/hit.wav");
+		wingAudio = new Sound("sfx/wing.wav");
 	}
 
 	private IndividualSpriteAnimation initFlappyAnimation() {
