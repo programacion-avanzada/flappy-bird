@@ -57,4 +57,8 @@ public class Ground extends GameObject implements Updatable, Renderable, Collide
 	public Shape getCollider() {
 		return collider;
 	}
+	
+	@Override
+	public void destroy() {	}
+	
 }

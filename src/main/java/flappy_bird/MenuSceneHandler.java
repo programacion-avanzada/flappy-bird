@@ -147,8 +147,5 @@ public class MenuSceneHandler {
 		return scene;
 	}
 
-	public void onStart(Object object) {
-		// TODO Auto-generated method stub
-
-	}
+	public void onStart(Object object) { }
 }

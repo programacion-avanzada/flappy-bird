@@ -49,4 +49,7 @@ public class Background extends GameObject implements Updatable, Renderable {
 		render.setTranslateX(posX % cityWidth);
 	}
 
+	@Override
+	public void destroy() { }
+
 }

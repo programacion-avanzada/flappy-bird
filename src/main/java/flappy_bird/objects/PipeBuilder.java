@@ -49,4 +49,8 @@ public class PipeBuilder extends GameObject implements Updatable {
 		ScoreCollider scoreCollider = new ScoreCollider(x);
 		GameObjectBuilder.getInstance().add(topPipe, bottomPipe, scoreCollider);
 	}
+	
+	@Override
+	public void destroy() {	}
+	
 }

@@ -37,4 +37,7 @@ public class ScoreCollider extends GameObject implements Updatable, Collideable 
 		GameObjectBuilder.getInstance().remove(this);
 	}
 
+	@Override
+	public void destroy() {	}
+	
 }

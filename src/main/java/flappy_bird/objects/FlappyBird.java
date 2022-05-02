@@ -217,4 +217,7 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	public double getY() {
 		return posY;
 	}
+
+	@Override
+	public void destroy() { }
 }

@@ -81,4 +81,7 @@ public class Score extends GameObject implements Renderable {
 		return score;
 	}
 
+	@Override
+	public void destroy() {	}
+	
 }

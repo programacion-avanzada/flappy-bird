@@ -38,5 +38,7 @@ public class TextoComenzar extends GameObject implements Renderable {
 		return render;
 	}
 
-
+	@Override
+	public void destroy() {	}
+	
 }

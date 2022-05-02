@@ -39,4 +39,7 @@ public class FpsInfo extends GameObject implements Renderable, Updatable {
 		text.setText("FPS: " + fps);
 	}
 
+	@Override
+	public void destroy() {	}
+
 }

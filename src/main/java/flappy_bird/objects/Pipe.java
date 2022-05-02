@@ -93,4 +93,8 @@ public class Pipe extends GameObject implements Updatable, Renderable, Collideab
 	public Shape getCollider() {
 		return collider;
 	}
+	
+	@Override
+	public void destroy() {	}
+	
 }
