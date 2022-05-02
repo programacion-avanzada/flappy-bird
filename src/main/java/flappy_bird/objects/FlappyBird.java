@@ -99,9 +99,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	}
 	
 	private void initAudios() {
-		dieAudio = new Sound("sfx/die.wav");
-		hitAudio = new Sound("sfx/hit.wav");
-		wingAudio = new Sound("sfx/wing.wav");
+		dieAudio = Sound.getDieAudio();
+		hitAudio = Sound.getHitAudio();
+		wingAudio = Sound.getWingAudio();
 	}
 
 	private IndividualSpriteAnimation initFlappyAnimation() {
