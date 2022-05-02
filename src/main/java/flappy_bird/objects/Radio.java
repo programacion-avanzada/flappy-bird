@@ -45,12 +45,12 @@ public class Radio extends GameObject implements Updatable, Renderable {
 		this.posX = posX;
 		this.player = player;
 
-		image = new Image("file:src/main/resources/res/img/portal-radio.png", width, height, false, false);
+		image = new Image("file:src/main/resources/img/portal-radio.png", width, height, false, false);
 		render = new ImageView(image);
 		render.setTranslateX(posX - width / 2);
 		render.setTranslateY(posY - height - 36 / 2 + 2); // XXX magic number player.height
 
-		Media loop = new Media(new File("src/main/resources/res/snd/looping-radio-mix.mp3").toURI().toString());
+		Media loop = new Media(new File("src/main/resources/snd/looping-radio-mix.mp3").toURI().toString());
 		mediaPlayer = new MediaPlayer(loop);
 		mediaPlayer.setVolume(1);
 		// mediaPlayer.seek(Duration.ZERO);

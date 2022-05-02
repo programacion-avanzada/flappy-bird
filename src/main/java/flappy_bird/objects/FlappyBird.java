@@ -77,9 +77,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	}
 
 	private void initImages() {
-		imageUp = new Image("file:src/main/resources/res/img/flappy-bird-up.png", width, height, false, false);
-		imageBase = new Image("file:src/main/resources/res/img/flappy-bird.png", width, height, false, false);
-		imageDown = new Image("file:src/main/resources/res/img/flappy-bird-down.png", width, height, false, false);
+		imageUp = new Image("file:src/main/resources/img/flappy-bird-up.png", width, height, false, false);
+		imageBase = new Image("file:src/main/resources/img/flappy-bird.png", width, height, false, false);
+		imageDown = new Image("file:src/main/resources/img/flappy-bird-down.png", width, height, false, false);
 
 		Color[] original = { Color.rgb(247, 182, 67), Color.rgb(215, 229, 204), Color.rgb(208, 48, 21),
 				Color.rgb(249, 58, 28), Color.rgb(249, 115, 39) };
@@ -99,9 +99,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	}
 	
 	private void initAudios() {
-		dieAudio = new AudioClip("file:src/main/resources/res/sfx/die.wav");
-		hitAudio = new AudioClip("file:src/main/resources/res/sfx/hit.wav");
-		wingAudio = new AudioClip("file:src/main/resources/res/sfx/wing.wav");
+		dieAudio = new AudioClip("file:src/main/resources/sfx/die.wav");
+		hitAudio = new AudioClip("file:src/main/resources/sfx/hit.wav");
+		wingAudio = new AudioClip("file:src/main/resources/sfx/wing.wav");
 	}
 
 	private IndividualSpriteAnimation initFlappyAnimation() {

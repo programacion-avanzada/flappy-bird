@@ -42,9 +42,9 @@ public class Score extends GameObject implements Renderable {
 
 		// XXX change everything to getResource
 		// pointAudio = new AudioClip(getClass().getResource("../../../point.wav").toExternalForm());
-		pointAudio = new AudioClip("file:src/main/resources/res/sfx/point.wav");
+		pointAudio = new AudioClip("file:src/main/resources/sfx/point.wav");
 
-		Font font = Font.loadFont("file:src/main/resources/res/font/flappy-bird-numbers.ttf", 50);
+		Font font = Font.loadFont("file:src/main/resources/font/flappy-bird-numbers.ttf", 50);
 		scoreText.setTextAlignment(TextAlignment.CENTER);
 		scoreText.setFont(font);
 		scoreText.setFill(Color.BLACK);
