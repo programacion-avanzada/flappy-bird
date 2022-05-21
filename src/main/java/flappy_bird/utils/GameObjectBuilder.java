@@ -76,7 +76,7 @@ public class GameObjectBuilder {
 	}
 
 	public void remove(GameObject... gameObjects) {
-		checkRootNode();
+		//checkRootNode();
 
 		for (GameObject gameObject : gameObjects) {
 			allGameObjects.remove(gameObject);

@@ -9,6 +9,8 @@ public class FlappyBirdGame extends Application {
 	private Stage stage;
 
 	private MenuSceneHandler menuSceneHandler;
+
+	private GameSceneHandler gameSceneHandler;
 	@Override
 	public void start(Stage stage) {
 		this.stage = stage;
@@ -40,10 +42,17 @@ public class FlappyBirdGame extends Application {
 
 	public void startGame() {
 		menuSceneHandler.unload();
-		GameSceneHandler gameSceneHandler = new GameSceneHandler();
+		gameSceneHandler = new GameSceneHandler(this);
 		Scene scene = gameSceneHandler.getScene();
 		stage.setScene(scene);
-		gameSceneHandler.start(true);
-		
+		gameSceneHandler.load(true);
+	}
+	
+	public void startMenu() {
+		gameSceneHandler.unload();
+		menuSceneHandler = new MenuSceneHandler(this);
+		Scene scene = menuSceneHandler.getScene();
+		stage.setScene(scene);
+		menuSceneHandler.load();
 	}
 }

@@ -1,11 +1,9 @@
 package flappy_bird;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import flappy_bird.interfaces.Collidator;
 import flappy_bird.interfaces.Collideable;
-import flappy_bird.interfaces.Updatable;
 import flappy_bird.objects.Background;
 import flappy_bird.objects.FlappyBird;
 import flappy_bird.objects.FpsInfo;
@@ -14,7 +12,6 @@ import flappy_bird.objects.PipeBuilder;
 import flappy_bird.objects.Radio;
 import flappy_bird.objects.Score;
 import flappy_bird.utils.GameObjectBuilder;
-import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -27,14 +24,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
-public class GameSceneHandler {
-	private final long NANOS_IN_SECOND = 1_000_000_000;
-	private final double NANOS_IN_SECOND_D = 1_000_000_000.0;
-
-	private int frames = 0;
-	private int last_fps_frame = 0;
-	private AtomicInteger fps = new AtomicInteger(0);
-
+public class GameSceneHandler extends SceneHandler {
+	
 	private FlappyBird player;
 	private Background background;
 	private Ground ground;
@@ -43,24 +34,56 @@ public class GameSceneHandler {
 	private FpsInfo fpsInfo;
 	private Radio radio;
 
-	AnimationTimer gameTimer;
-
 	// TODO pause
 	// boolean paused = false;
 	boolean started = false;
 	boolean ended = false;
 
-	private Scene scene;
+	public GameSceneHandler(FlappyBirdGame g) {
+		super(g);
+	}
 
-	private long previousNanoFrame;
-	private long previousNanoSecond;
-
-	public GameSceneHandler() {
+	protected void prepareScene() {
 		Group rootGroup = new Group();
 		scene = new Scene(rootGroup, Config.baseWidth, Config.baseHeight, Color.BLACK);
 	}
+
+	protected void defineEventHandlers() {
+		mouseEventHandler = new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				if (event.getButton() == MouseButton.PRIMARY) {
+					makeAction();
+				}
+			}
+		};
+
+		keyEventHandler = new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent e) {
+				switch (e.getCode()) {
+
+				case W:
+				case UP:
+				case ENTER:
+				case SPACE:
+					makeAction();
+					break;
+				case R:
+					restart();
+					break;
+				case Q:
+				case ESCAPE:
+					g.startMenu();
+					break;
+				default:
+					break;
+				}
+			}
+		};
+	}
 	
-	public void start(boolean fullStart) {
+	public void load(boolean fullStart) {
 		Group rootGroup = new Group();
 		scene.setRoot(rootGroup);
 		
@@ -80,20 +103,13 @@ public class GameSceneHandler {
 
 		if (fullStart) {
 			addTimeEventsAnimationTimer();
-			addInputEvents(scene);
+			addInputEvents();
 		}
-	}
-	
-	public void stop() {
-		cleanData();
-		// Remove events
-		gameTimer.stop();
-		gameTimer = null;
 	}
 	
 	public void restart() {
 		cleanData();
-		start(false);
+		load(false);
 	}
 	
 	private void cleanData() {
@@ -101,37 +117,6 @@ public class GameSceneHandler {
 		ended = false;
 		started = false;
 		Config.baseSpeed = 250;
-	}
-
-	private void addInputEvents(Scene scene) {
-		scene.addEventHandler(MouseEvent.MOUSE_PRESSED, event -> {
-			if (event.getButton() == MouseButton.PRIMARY) {
-				makeAction();
-			}
-		});
-
-		scene.addEventHandler(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-			@Override
-			public void handle(KeyEvent e) {
-				switch (e.getCode()) {
-
-				case W:
-				case UP:
-				case ENTER:
-				case SPACE:
-					makeAction();
-					break;
-				case R:
-					restart();
-					break;
-				case ESCAPE:
-					// TODO pause
-					break;
-				default:
-					break;
-				}
-			}
-		});
 	}
 
 	private void makeAction() {
@@ -143,38 +128,8 @@ public class GameSceneHandler {
 		player.push();
 	}
 
-	private void addTimeEventsAnimationTimer() {
-		gameTimer = new AnimationTimer() {
-			@Override
-			public void handle(long currentNano) {
-				// Update tick
-				update((currentNano - previousNanoFrame) / NANOS_IN_SECOND_D);
-				previousNanoFrame = currentNano;
-
-				// Update second
-				if (currentNano - previousNanoSecond > NANOS_IN_SECOND) {
-					oneSecondUpdate((currentNano - previousNanoSecond) / NANOS_IN_SECOND_D);
-					previousNanoSecond = currentNano;
-				}
-
-			}
-		};
-
-		previousNanoSecond = System.nanoTime();
-		previousNanoFrame = System.nanoTime();
-		gameTimer.start();
-	}
-
 	public void update(double delta) {
-		frames++;
-
-		List<Updatable> updatables = GameObjectBuilder.getInstance().getUpdatables();
-		for (Updatable updatable : updatables) {
-			updatable.update(delta);
-		}
-		// for (int i = 0; i < updatables.size(); i++) {
-		// updatables.get(i).update(delta);
-		// }
+		super.update(delta);
 
 		checkColliders();
 
@@ -196,11 +151,6 @@ public class GameSceneHandler {
 				});
 			}
 		}
-	}
-
-	public void oneSecondUpdate(double delta) {
-		fps.set(frames - last_fps_frame);
-		last_fps_frame = frames;
 	}
 
 	private void checkColliders() {
@@ -238,9 +188,10 @@ public class GameSceneHandler {
 			}
 		}
 	}
-
-	public Scene getScene() {
-		return scene;
+	
+	public void unload() {
+		cleanData();
+		super.unload();
 	}
 
 }

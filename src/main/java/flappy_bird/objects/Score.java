@@ -2,8 +2,8 @@ package flappy_bird.objects;
 
 import flappy_bird.Config;
 import flappy_bird.interfaces.Renderable;
+import flappy_bird.utils.AudioResources;
 import flappy_bird.utils.GameObject;
-import flappy_bird.utils.Sound;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -27,7 +28,7 @@ public class Score extends GameObject implements Renderable {
 	private VBox render;
 
 	private Animation zoomAnimation;
-	private Sound pointAudio;
+	private AudioClip pointAudio;
 
 	public Score() {
 		scoreText = new Text("" + score);
@@ -40,7 +41,7 @@ public class Score extends GameObject implements Renderable {
 		// Esto debería heredarse?
 		render.setPrefWidth(Config.baseWidth);
 
-		pointAudio = Sound.getPointAudio();
+		pointAudio = AudioResources.getPointAudio();
 
 		Font font = Font.loadFont(ClassLoader.getSystemResource("font/flappy-bird-numbers.ttf").toString(), 50);
 		scoreText.setTextAlignment(TextAlignment.CENTER);
@@ -62,6 +63,8 @@ public class Score extends GameObject implements Renderable {
 	public void increase() {
 		score++;
 		scoreText.setText("" + score);
+		this.updateHighScore();
+
 		zoomAnimation = new Timeline(
 				new KeyFrame(Duration.ZERO, new KeyValue(scoreText.scaleXProperty(), 1),
 						new KeyValue(scoreText.scaleYProperty(), 1)),
@@ -77,6 +80,13 @@ public class Score extends GameObject implements Renderable {
 
 	public int getScore() {
 		return score;
+	}
+	
+	public void updateHighScore() {
+		if (this.score > Config.maxScore) {
+			Config.maxScore = this.score;
+			maxScoreText.setText("TOP: " + Config.maxScore);
+		}
 	}
 
 	@Override

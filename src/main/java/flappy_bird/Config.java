@@ -14,7 +14,7 @@ public class Config {
 	public final static double pipesPerSecond = 1.3;
 	public final static int playerCenter = baseWidth / 3;
 	
-	public static int maxScore = 100;
+	public static int maxScore = 0;
 
 	private Config() {
 	}

@@ -5,14 +5,15 @@ import flappy_bird.interfaces.Collidator;
 import flappy_bird.interfaces.Collideable;
 import flappy_bird.interfaces.Renderable;
 import flappy_bird.interfaces.Updatable;
+import flappy_bird.utils.AudioResources;
 import flappy_bird.utils.GameObject;
 import flappy_bird.utils.IndividualSpriteAnimation;
-import flappy_bird.utils.Sound;
 import flappy_bird.utils.Utils;
 import javafx.animation.Animation;
 import javafx.animation.TranslateTransition;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -43,9 +44,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	private Image imageUp;
 	private Image imageDown;
 	
-	private Sound dieAudio;
-	private Sound hitAudio;
-	private Sound wingAudio;
+	private AudioClip dieAudio;
+	private AudioClip hitAudio;
+	private AudioClip wingAudio;
 
 	private ImageView render;
 
@@ -99,9 +100,9 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 	}
 	
 	private void initAudios() {
-		dieAudio = Sound.getDieAudio();
-		hitAudio = Sound.getHitAudio();
-		wingAudio = Sound.getWingAudio();
+		dieAudio = AudioResources.getDieAudio();
+		hitAudio = AudioResources.getHitAudio();
+		wingAudio = AudioResources.getWingAudio();
 	}
 
 	private IndividualSpriteAnimation initFlappyAnimation() {
@@ -218,6 +219,10 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 		return posY;
 	}
 
+	public int getHeight() {
+		return height;
+	}
+	
 	@Override
 	public void destroy() { }
 }
