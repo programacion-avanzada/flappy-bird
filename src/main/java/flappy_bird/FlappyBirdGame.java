@@ -31,7 +31,7 @@ public class FlappyBirdGame extends Application {
 		// scale.setY(scene.getHeight() / HEIGHT);
 		// images.getTransforms().add(scale);
 
-		stage.getIcons().add(new Image("file:src/main/resources/ico/logo.png"));
+		stage.getIcons().add(new Image(ClassLoader.getSystemResourceAsStream("ico/logo.png")));
 		stage.setTitle("Flappy Bird FXGame | Programación Avanzada");
 		stage.show();
 	}

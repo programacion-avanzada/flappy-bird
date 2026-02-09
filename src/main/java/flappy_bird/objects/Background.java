@@ -20,7 +20,7 @@ public class Background extends GameObject implements Updatable, Renderable {
 	private final int grassHeight = 100;
 
 	public Background() {
-		Image backgroundImage = new Image("file:src/main/resources/img/background.png", cityWidth, cityHeight, false, false);
+		Image backgroundImage = new Image(ClassLoader.getSystemResourceAsStream("img/background.png"), cityWidth, cityHeight, false, false);
 
 		ImagePattern image_pattern = new ImagePattern(backgroundImage, cityWidth, cityHeight, cityWidth, cityHeight,
 				false);
@@ -45,7 +45,7 @@ public class Background extends GameObject implements Updatable, Renderable {
 
 	@Override
 	public void update(double deltaTime) {
-		posX += -Config.baseSpeed * deltaTime * 0.01;
+		posX += -Config.currentSpeed * deltaTime * 0.01;
 		render.setTranslateX(posX % cityWidth);
 	}
 

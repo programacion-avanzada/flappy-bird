@@ -21,7 +21,7 @@ public class Ground extends GameObject implements Updatable, Renderable, Collide
 	private Rectangle collider;
 
 	public Ground() {
-		Image backgroundImage = new Image("file:src/main/resources/img/ground.png", 24, 88, false, false);
+		Image backgroundImage = new Image(ClassLoader.getSystemResourceAsStream("img/ground.png"), 24, 88, false, false);
 
 		ImagePattern image_pattern = new ImagePattern(backgroundImage, 24, 88, 24, 88, false);
 
@@ -48,7 +48,7 @@ public class Ground extends GameObject implements Updatable, Renderable, Collide
 
 	@Override
 	public void update(double deltaTime) {
-		posX += -Config.baseSpeed * deltaTime;
+		posX += -Config.currentSpeed * deltaTime;
 
 		render.setTranslateX(posX % 24);
 	}

@@ -32,11 +32,11 @@ public class Pipe extends GameObject implements Updatable, Renderable, Collideab
 		Image pipe;
 		Image pipePattern;
 		if (fromTop) {
-			pipe = new Image("file:src/main/resources/img/pipe1a.png", width, imageHeight, false, false);
-			pipePattern = new Image("file:src/main/resources/img/pipe1b.png", width, 3, false, false);
+			pipe = new Image(ClassLoader.getSystemResourceAsStream("img/pipe1a.png"), width, imageHeight, false, false);
+			pipePattern = new Image(ClassLoader.getSystemResourceAsStream("img/pipe1b.png"), width, 3, false, false);
 		} else {
-			pipe = new Image("file:src/main/resources/img/pipe2a.png", width, imageHeight, false, false);
-			pipePattern = new Image("file:src/main/resources/img/pipe2b.png", width, 3, false, false);
+			pipe = new Image(ClassLoader.getSystemResourceAsStream("img/pipe2a.png"), width, imageHeight, false, false);
+			pipePattern = new Image(ClassLoader.getSystemResourceAsStream("img/pipe2b.png"), width, 3, false, false);
 		}
 		ImageView imageView = new ImageView(pipe);
 		ImagePattern imagePattern = new ImagePattern(pipePattern);
@@ -73,7 +73,7 @@ public class Pipe extends GameObject implements Updatable, Renderable, Collideab
 
 	@Override
 	public void update(double deltaTime) {
-		setPosX(posX + -Config.baseSpeed * deltaTime);
+		setPosX(posX + -Config.currentSpeed * deltaTime);
 
 		if (isOffScreen()) {
 			GameObjectBuilder.getInstance().remove(this);

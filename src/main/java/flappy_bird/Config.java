@@ -7,7 +7,8 @@ public class Config {
 
 	public final static double gravity = 1300;
 	public final static double jumpForce = 500;
-	public static double baseSpeed = 250;
+	public final static double DEFAULT_SPEED = 250;
+	public static double currentSpeed = DEFAULT_SPEED;
 
 	public final static double emptySpace = 0.25;
 

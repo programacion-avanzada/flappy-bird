@@ -4,7 +4,6 @@ import flappy_bird.Config;
 import flappy_bird.interfaces.Renderable;
 import flappy_bird.utils.AudioResources;
 import flappy_bird.utils.GameObject;
-import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -20,14 +19,26 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 public class Score extends GameObject implements Renderable {
-	private final int Y = 15;
+	// Layout constants
+	private static final int TOP_MARGIN = 15;
+	private static final int SPACING = 5;
+
+	// Font sizes
+	private static final int SCORE_FONT_SIZE = 50;
+	private static final int HIGH_SCORE_FONT_SIZE = 15;
+
+	// Animation constants
+	private static final double PULSE_PEAK_SCALE = 1.15;
+	private static final Duration PULSE_PEAK_TIME = Duration.millis(150);
+	private static final Duration PULSE_TOTAL_TIME = Duration.millis(400);
+
 	private int score = 0;
 
 	private Text scoreText;
 	private Text maxScoreText;
 	private VBox render;
 
-	private Animation zoomAnimation;
+	private Timeline pulseAnimation;
 	private AudioClip pointAudio;
 
 	public Score() {
@@ -35,24 +46,38 @@ public class Score extends GameObject implements Renderable {
 		maxScoreText = new Text("TOP: " + Config.maxScore);
 
 		render = new VBox(maxScoreText, scoreText);
-		render.setSpacing(5);
+		render.setSpacing(SPACING);
 		render.setAlignment(Pos.TOP_CENTER);
-		render.setTranslateY(Y);
-		// Esto debería heredarse?
+		render.setTranslateY(TOP_MARGIN);
 		render.setPrefWidth(Config.baseWidth);
 
 		pointAudio = AudioResources.getPointAudio();
 
-		Font font = Font.loadFont(ClassLoader.getSystemResource("font/flappy-bird-numbers.ttf").toString(), 50);
+		Font font = Font.loadFont(ClassLoader.getSystemResource("font/flappy-bird-numbers.ttf").toString(), SCORE_FONT_SIZE);
 		scoreText.setTextAlignment(TextAlignment.CENTER);
 		scoreText.setFont(font);
 		scoreText.setFill(Color.BLACK);
-		
-		maxScoreText.setFont(Font.font("MONOSPACE", 15));
+
+		maxScoreText.setFont(Font.font("MONOSPACE", HIGH_SCORE_FONT_SIZE));
 
 		DropShadow ds = new DropShadow();
 		ds.setColor(Color.WHITE);
 		scoreText.setEffect(ds);
+
+		pulseAnimation = initPulseAnimation();
+	}
+
+	private Timeline initPulseAnimation() {
+		return new Timeline(
+				new KeyFrame(Duration.ZERO,
+						new KeyValue(scoreText.scaleXProperty(), 1),
+						new KeyValue(scoreText.scaleYProperty(), 1)),
+				new KeyFrame(PULSE_PEAK_TIME,
+						new KeyValue(scoreText.scaleXProperty(), PULSE_PEAK_SCALE),
+						new KeyValue(scoreText.scaleYProperty(), PULSE_PEAK_SCALE)),
+				new KeyFrame(PULSE_TOTAL_TIME,
+						new KeyValue(scoreText.scaleXProperty(), 1),
+						new KeyValue(scoreText.scaleYProperty(), 1)));
 	}
 
 	@Override
@@ -65,16 +90,7 @@ public class Score extends GameObject implements Renderable {
 		scoreText.setText("" + score);
 		this.updateHighScore();
 
-		zoomAnimation = new Timeline(
-				new KeyFrame(Duration.ZERO, new KeyValue(scoreText.scaleXProperty(), 1),
-						new KeyValue(scoreText.scaleYProperty(), 1)),
-				new KeyFrame(Duration.seconds(0.15),
-						new KeyValue(scoreText.scaleXProperty(), Math.min(1.05 + score / 200.0, 2)),
-						new KeyValue(scoreText.scaleYProperty(), Math.min(1.05 + score / 200.0, 2))),
-				new KeyFrame(Duration.seconds(0.4), new KeyValue(scoreText.scaleXProperty(), 1),
-						new KeyValue(scoreText.scaleYProperty(), 1)));
-		zoomAnimation.play();
-
+		pulseAnimation.playFromStart();
 		pointAudio.play();
 	}
 
@@ -90,6 +106,8 @@ public class Score extends GameObject implements Renderable {
 	}
 
 	@Override
-	public void destroy() {	}
+	public void destroy() {
+		pulseAnimation.stop();
+	}
 	
 }

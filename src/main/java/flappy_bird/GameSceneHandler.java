@@ -25,19 +25,25 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 public class GameSceneHandler extends SceneHandler {
-	
+	// Death shake animation constants
+	private static final double SHAKE_INTENSITY = 20;
+	private static final Duration SHAKE_CYCLE_DURATION = Duration.millis(50);
+	private static final int SHAKE_CYCLE_COUNT = 6;
+
 	private FlappyBird player;
 	private Background background;
 	private Ground ground;
 	private PipeBuilder pipeBuilder;
 	private Score score;
-	private FpsInfo fpsInfo;
 	private Radio radio;
+	private FpsInfo fpsInfo;
+
+	private TranslateTransition deathShakeAnimation;
 
 	// TODO pause
-	// boolean paused = false;
-	boolean started = false;
-	boolean ended = false;
+	// private boolean paused = false;
+	private boolean started = false;
+	private boolean ended = false;
 
 	public GameSceneHandler(FlappyBirdGame g) {
 		super(g);
@@ -86,13 +92,15 @@ public class GameSceneHandler extends SceneHandler {
 	public void load(boolean fullStart) {
 		Group rootGroup = new Group();
 		scene.setRoot(rootGroup);
-		
+
+		deathShakeAnimation = initDeathShakeAnimation(rootGroup);
+
 		score = new Score();
 		player = new FlappyBird(Config.playerCenter, Config.baseHeight / 2, score);
 		background = new Background();
 		ground = new Ground();
 		pipeBuilder = new PipeBuilder();
-		fpsInfo = new FpsInfo(fps);
+		fpsInfo = new FpsInfo();
 		radio = new Radio(Config.playerCenter, Config.baseHeight / 2, player);
 
 		// Add to builder
@@ -116,7 +124,19 @@ public class GameSceneHandler extends SceneHandler {
 		GameObjectBuilder.getInstance().removeAll();
 		ended = false;
 		started = false;
-		Config.baseSpeed = 250;
+		Config.currentSpeed = Config.DEFAULT_SPEED;
+	}
+
+	private TranslateTransition initDeathShakeAnimation(Group rootGroup) {
+		TranslateTransition shake = new TranslateTransition(SHAKE_CYCLE_DURATION, rootGroup);
+		shake.setFromX(-SHAKE_INTENSITY);
+		shake.setByX(SHAKE_INTENSITY);
+		shake.setCycleCount(SHAKE_CYCLE_COUNT);
+		shake.setAutoReverse(true);
+		shake.setOnFinished(event -> {
+			rootGroup.setTranslateX(0);
+		});
+		return shake;
 	}
 
 	private void makeAction() {
@@ -137,18 +157,9 @@ public class GameSceneHandler extends SceneHandler {
 			if (player.isDead()) {
 				ended = true;
 				pipeBuilder.stopBuilding();
-				Config.baseSpeed = 0;
+				Config.currentSpeed = 0;
 
-				// Improve
-				TranslateTransition tt = new TranslateTransition(Duration.millis(50), scene.getRoot());
-				tt.setFromX(-20f);
-				tt.setByX(20f);
-				tt.setCycleCount(6);
-				tt.setAutoReverse(true);
-				tt.playFromStart();
-				tt.setOnFinished(event -> {
-					scene.getRoot().setTranslateX(0);
-				});
+				deathShakeAnimation.playFromStart();
 			}
 		}
 	}
@@ -172,9 +183,6 @@ public class GameSceneHandler extends SceneHandler {
 				Collideable collideable = collideables.get(j);
 				Shape intersect = Shape.intersect(collidator.getCollider(), collideable.getCollider());
 
-				// TODO test times
-				// XXX Si el substract es distinto???
-				// Check intersects
 				if (intersect.getBoundsInLocal().getWidth() != -1) {
 					collidator.collide(collideable);
 				} else {

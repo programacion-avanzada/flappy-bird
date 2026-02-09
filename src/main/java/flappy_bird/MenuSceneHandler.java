@@ -20,9 +20,9 @@ public class MenuSceneHandler extends SceneHandler {
 	private FlappyBird player;
 	private Background background;
 	private Ground ground;
-	private FpsInfo fpsInfo;
 	private Title title;
 	private TextoComenzar textoComenzar;
+	private FpsInfo fpsInfo;
 
 	private Group rootGroup;
 
@@ -75,7 +75,7 @@ public class MenuSceneHandler extends SceneHandler {
 		
 		background = new Background();
 		ground = new Ground();
-		fpsInfo = new FpsInfo(fps);
+		fpsInfo = new FpsInfo();
 
 		title = new Title();
 		textoComenzar = new TextoComenzar();

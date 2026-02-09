@@ -24,7 +24,7 @@ public class ScoreCollider extends GameObject implements Updatable, Collideable 
 
 	@Override
 	public void update(double deltaTime) {
-		posX -= Config.baseSpeed * deltaTime;
+		posX -= Config.currentSpeed * deltaTime;
 		collider.setX(posX);
 	}
 

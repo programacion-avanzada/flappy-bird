@@ -1,7 +1,6 @@
 package flappy_bird;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import flappy_bird.interfaces.Updatable;
 import flappy_bird.utils.GameObjectBuilder;
@@ -12,17 +11,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public abstract class SceneHandler {
-	protected final long NANOS_IN_SECOND = 1_000_000_000;
-	protected final double NANOS_IN_SECOND_D = 1_000_000_000.0;
-
-	protected int frames = 0;
-	protected int last_fps_frame = 0;
-	protected AtomicInteger fps = new AtomicInteger(0);
+	protected static final long NANOS_IN_SECOND = 1_000_000_000;
+	protected static final double NANOS_IN_SECOND_D = 1_000_000_000.0;
 	
 	
 	protected AnimationTimer gameTimer;
-	protected long previousNanoFrame;
-	protected long previousNanoSecond;
+	private long previousNanoFrame;
+	private boolean firstFrame;
 	protected FlappyBirdGame g;
 
 	protected Scene scene;
@@ -36,18 +31,11 @@ public abstract class SceneHandler {
 			defineEventHandlers();
 	}
 	
-	public void oneSecondUpdate(double delta) {
-		fps.set(frames - last_fps_frame);
-		last_fps_frame = frames;
-	}
-
 	public Scene getScene() {
 		return scene;
 	}
 	
 	public void update(double delta) {
-		frames++;
-
 		List<Updatable> updatables = GameObjectBuilder.getInstance().getUpdatables();
 		for (Updatable updatable : updatables) {
 			updatable.update(delta);
@@ -55,24 +43,21 @@ public abstract class SceneHandler {
 	}
 
 	protected void addTimeEventsAnimationTimer() {
+		firstFrame = true;
 		gameTimer = new AnimationTimer() {
 			@Override
 			public void handle(long currentNano) {
-				// Update tick
-				update((currentNano - previousNanoFrame) / NANOS_IN_SECOND_D);
-				previousNanoFrame = currentNano;
-	
-				// Update second
-				if (currentNano - previousNanoSecond > NANOS_IN_SECOND) {
-					oneSecondUpdate((currentNano - previousNanoSecond) / NANOS_IN_SECOND_D);
-					previousNanoSecond = currentNano;
+				if (firstFrame) {
+					previousNanoFrame = currentNano;
+					firstFrame = false;
+					return;
 				}
-	
+				double deltaTime = (currentNano - previousNanoFrame) / NANOS_IN_SECOND_D;
+				previousNanoFrame = currentNano;
+				update(deltaTime);
 			}
 		};
-	
-		previousNanoSecond = System.nanoTime();
-		previousNanoFrame = System.nanoTime();
+
 		gameTimer.start();
 	}
 

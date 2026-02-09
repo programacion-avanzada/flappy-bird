@@ -1,7 +1,5 @@
 package flappy_bird.objects;
 
-import java.io.File;
-
 import flappy_bird.Config;
 import flappy_bird.interfaces.Renderable;
 import flappy_bird.interfaces.Updatable;
@@ -21,98 +19,100 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 public class Radio extends GameObject implements Updatable, Renderable {
+	// Sprite dimensions
+	private static final int WIDTH = 50;
+	private static final int HEIGHT = 43;
+
+	// Throw animation constants
+	private static final Duration THROW_DURATION = Duration.millis(1500);
+	private static final double THROW_HEIGHT = 250;
+	private static final double THROW_ROTATION = 1130;
+	private static final double LANDED_SCALE = 0.75;
+	private static final double AIR_SPEED_FACTOR = 0.25;
+
+	// Sound distance constants
+	private static final double MAX_SOUND_DISTANCE = 1500;
+	private static final double REMOVE_DISTANCE = 5000;
+
+	// Custom interpolators for physics-like animation
+	private static final Interpolator EASE_IN_QUAD = new Interpolator() {
+		@Override
+		protected double curve(double t) {
+			return t * t; // Accelerating (like gravity)
+		}
+	};
+
+	private static final Interpolator EASE_OUT_QUAD = new Interpolator() {
+		@Override
+		protected double curve(double t) {
+			return 1 - (1 - t) * (1 - t); // Decelerating (like throwing up)
+		}
+	};
+
+	private final FlappyBird player;
+	private final double radioBaseY;
+
 	private MediaPlayer mediaPlayer;
 	private ImageView render;
-
 	private Image image;
 	private double posX;
 	private boolean started = false;
-	private boolean irAir = true;
-
-	private final int width = 50;
-	private final int height = 43;
-	private final FlappyBird player;
+	private boolean inAir = true;
 
 	private Animation thrownAnimation;
-	private final Animation idleAnimation;
-
-	private final Duration translateDuration = Duration.millis(1000);
-	private final Duration throwDuration = Duration.millis(1500);
-	private final double maxDistanceSound = 1500;
-	private final double distanceRemoveSound = 5000;
 
 	public Radio(double posX, double posY, FlappyBird player) {
 		this.posX = posX;
 		this.player = player;
 
-		image = new Image("file:src/main/resources/img/portal-radio.png", width, height, false, false);
+		image = new Image(ClassLoader.getSystemResourceAsStream("img/portal-radio.png"), WIDTH, HEIGHT, false, false);
 		render = new ImageView(image);
-		render.setTranslateX(posX - width / 2);
-		render.setTranslateY(posY - height - player.getHeight() / 2 + 2); // XXX magic number player.height
+		render.setTranslateX(posX - WIDTH / 2);
 
-		Media loop = new Media(new File("src/main/resources/snd/looping-radio-mix.mp3").toURI().toString());
+		// Bind radio Y position to bird's translateY for synchronized bobbing
+		radioBaseY = posY - HEIGHT - player.getHeight() / 2 + 2;
+		render.translateYProperty().bind(
+				player.getRender().translateYProperty().add(radioBaseY));
+
+		Media loop = new Media(ClassLoader.getSystemResource("snd/looping-radio-mix.mp3").toString());
 		mediaPlayer = new MediaPlayer(loop);
 		mediaPlayer.setVolume(1);
-		// mediaPlayer.seek(Duration.ZERO);
 		mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mediaPlayer.play();
-
-		idleAnimation = initIdleAnimation();
-		idleAnimation.play();
-		
 	}
 
 	public void start() {
 		started = true;
-		idleAnimation.stop();
+		// Unbind from bird before starting thrown animation
+		render.translateYProperty().unbind();
+		render.setTranslateY(radioBaseY + player.getRender().getTranslateY());
+
 		thrownAnimation = initThrownAnimation();
 		thrownAnimation.play();
-		thrownAnimation.setOnFinished(e -> irAir = false);
-	}
-
-	private Animation initIdleAnimation() {
-		TranslateTransition translateTransition = new TranslateTransition(translateDuration, render);
-		translateTransition.setCycleCount(Animation.INDEFINITE);
-		translateTransition.setFromY(render.getTranslateY() - 10);
-		translateTransition.setToY(render.getTranslateY() + 10);
-		translateTransition.setAutoReverse(true);
-		translateTransition.jumpTo(Duration.millis(120));
-
-		return translateTransition;
+		thrownAnimation.setOnFinished(e -> inAir = false);
 	}
 
 	private Animation initThrownAnimation() {
-		Interpolator gravityInterpolator = new Interpolator() {
-			@Override
-			protected double curve(double t) {
-				return t * t;
-			}
-		};
-		
-		Interpolator inverseGravityInterpolator = new Interpolator() {
-			@Override
-			protected double curve(double t) {
-				return 1 - (1 - t) * (1 - t);
-			}
-		};
+		// Rising phase (1/3 of duration) - decelerates like throwing upward
+		TranslateTransition riseTransition = new TranslateTransition(THROW_DURATION.divide(3));
+		riseTransition.setInterpolator(EASE_OUT_QUAD);
+		riseTransition.setToY(render.getTranslateY() - THROW_HEIGHT);
 
-		TranslateTransition translateTransition = new TranslateTransition(throwDuration.divide(3));
-		translateTransition.setInterpolator(inverseGravityInterpolator);
-		translateTransition.setToY(render.getTranslateY() - 250);
+		// Falling phase (2/3 of duration) - accelerates like gravity
+		TranslateTransition fallTransition = new TranslateTransition(THROW_DURATION.divide(3).multiply(2));
+		fallTransition.setInterpolator(EASE_IN_QUAD);
+		fallTransition.setToY(Config.baseHeight - Config.groundHeight - HEIGHT * 2 / 3);
 
-		TranslateTransition translateTransition2 = new TranslateTransition(throwDuration.divide(3).multiply(2));
-		translateTransition2.setInterpolator(gravityInterpolator);
-		translateTransition2.setToY(Config.baseHeight - Config.groundHeight - height * 2 / 3);
-		SequentialTransition translateSequence = new SequentialTransition(render, translateTransition, translateTransition2);
+		SequentialTransition translateSequence = new SequentialTransition(render, riseTransition, fallTransition);
 
-		RotateTransition rotateTransition = new RotateTransition(throwDuration);
-		rotateTransition.setToAngle(1130);
+		RotateTransition rotateTransition = new RotateTransition(THROW_DURATION);
+		rotateTransition.setToAngle(THROW_ROTATION);
 
-		ScaleTransition scaleTransition = new ScaleTransition(throwDuration);
+		ScaleTransition scaleTransition = new ScaleTransition(THROW_DURATION);
 		scaleTransition.setInterpolator(Interpolator.EASE_OUT);
-		scaleTransition.setToX(0.75);
-		scaleTransition.setToY(0.75);
-		
+		scaleTransition.setToX(LANDED_SCALE);
+		scaleTransition.setToY(LANDED_SCALE);
+
 		return new ParallelTransition(render, translateSequence, rotateTransition, scaleTransition);
 	}
 
@@ -126,15 +126,23 @@ public class Radio extends GameObject implements Updatable, Renderable {
 		if (!started) {
 			return;
 		}
-		posX -= Config.baseSpeed * deltaTime * (irAir ? 0.25 : 1);
-		render.setTranslateX(posX - width / 2);
+
+		// Move slower while in air, normal speed on ground
+		double speedFactor = inAir ? AIR_SPEED_FACTOR : 1;
+		posX -= Config.currentSpeed * deltaTime * speedFactor;
+		render.setTranslateX(posX - WIDTH / 2);
+
+		// Calculate distance for spatial audio
 		double distance = Math.hypot(player.getX() - posX, player.getY() - render.getTranslateY());
-		if (distance > distanceRemoveSound) {
+
+		if (distance > REMOVE_DISTANCE) {
 			GameObjectBuilder.getInstance().remove(this);
 		} else {
-			mediaPlayer.setBalance(-distance / maxDistanceSound);
-			double linearVolume = (maxDistanceSound - distance) / maxDistanceSound;
-			mediaPlayer.setVolume(linearVolume < 0 ? 0 : Math.pow((maxDistanceSound - distance) / maxDistanceSound, 2));
+			// Stereo balance based on horizontal distance
+			mediaPlayer.setBalance(-distance / MAX_SOUND_DISTANCE);
+			// Volume falls off with square of distance
+			double normalizedDistance = (MAX_SOUND_DISTANCE - distance) / MAX_SOUND_DISTANCE;
+			mediaPlayer.setVolume(normalizedDistance < 0 ? 0 : normalizedDistance * normalizedDistance);
 		}
 	}
 
