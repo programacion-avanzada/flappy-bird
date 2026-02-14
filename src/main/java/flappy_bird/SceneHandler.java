@@ -6,6 +6,7 @@ import flappy_bird.interfaces.Updatable;
 import flappy_bird.utils.GameObjectBuilder;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -13,26 +14,24 @@ import javafx.scene.input.MouseEvent;
 public abstract class SceneHandler {
 	protected static final long NANOS_IN_SECOND = 1_000_000_000;
 	protected static final double NANOS_IN_SECOND_D = 1_000_000_000.0;
-	
-	
+
 	protected AnimationTimer gameTimer;
 	private long previousNanoFrame;
 	private boolean firstFrame;
 	protected FlappyBirdGame g;
 
 	protected Scene scene;
-	
+	protected Group scaleWrapper;
+
 	protected EventHandler<KeyEvent> keyEventHandler;
 	protected EventHandler<MouseEvent> mouseEventHandler;
 
 	public SceneHandler(FlappyBirdGame g) {
-			this.g = g;
-			prepareScene();
-			defineEventHandlers();
-	}
-	
-	public Scene getScene() {
-		return scene;
+		this.g = g;
+		GameCanvas canvas = g.getCanvas();
+		this.scene = canvas.getScene();
+		this.scaleWrapper = canvas.getScaleWrapper();
+		defineEventHandlers();
 	}
 	
 	public void update(double delta) {
@@ -71,7 +70,6 @@ public abstract class SceneHandler {
 		scene.removeEventHandler(MouseEvent.MOUSE_PRESSED, mouseEventHandler);
 	}
 	
-	protected abstract void prepareScene();
 	protected abstract void defineEventHandlers();
 
 	protected void unload() {

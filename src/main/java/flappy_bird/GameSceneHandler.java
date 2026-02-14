@@ -16,11 +16,9 @@ import javafx.animation.TranslateTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
@@ -47,11 +45,6 @@ public class GameSceneHandler extends SceneHandler {
 
 	public GameSceneHandler(FlappyBirdGame g) {
 		super(g);
-	}
-
-	protected void prepareScene() {
-		Group rootGroup = new Group();
-		scene = new Scene(rootGroup, Config.baseWidth, Config.baseHeight, Color.BLACK);
 	}
 
 	protected void defineEventHandlers() {
@@ -91,7 +84,7 @@ public class GameSceneHandler extends SceneHandler {
 	
 	public void load(boolean fullStart) {
 		Group rootGroup = new Group();
-		scene.setRoot(rootGroup);
+		scaleWrapper.getChildren().setAll(rootGroup);
 
 		deathShakeAnimation = initDeathShakeAnimation(rootGroup);
 

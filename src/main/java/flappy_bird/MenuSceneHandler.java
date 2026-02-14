@@ -9,11 +9,9 @@ import flappy_bird.objects.menu.Title;
 import flappy_bird.utils.GameObjectBuilder;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 
 public class MenuSceneHandler extends SceneHandler {
 
@@ -24,15 +22,8 @@ public class MenuSceneHandler extends SceneHandler {
 	private TextoComenzar textoComenzar;
 	private FpsInfo fpsInfo;
 
-	private Group rootGroup;
-
 	public MenuSceneHandler(FlappyBirdGame g) {
-		super(g);	
-	}
-
-	protected void prepareScene() {
-		rootGroup = new Group();
-		scene = new Scene(rootGroup, Config.baseWidth, Config.baseHeight, Color.BLACK);
+		super(g);
 	}
 
 	protected void defineEventHandlers() {
@@ -69,7 +60,7 @@ public class MenuSceneHandler extends SceneHandler {
 	public void load() {
 		boolean fullStart = true;
 		Group baseGroup = new Group();
-		rootGroup.getChildren().add(baseGroup);
+		scaleWrapper.getChildren().setAll(baseGroup);
 		
 		player = new FlappyBird(Config.baseWidth - 75, Config.baseHeight / 3, null);
 		
@@ -91,7 +82,7 @@ public class MenuSceneHandler extends SceneHandler {
 	}
 
 	public void unload() {
-		rootGroup.getChildren().remove(0);
+		scaleWrapper.getChildren().clear();
 		super.unload();
 	}
 }
