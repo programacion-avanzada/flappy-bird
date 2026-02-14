@@ -9,19 +9,19 @@ public final class AudioResources {
     }
 
 	public static AudioClip getDieAudio() {
-		return create("sfx/die.wav");
+		return create("sfx/die.mp3");
 	}
 
 	public static AudioClip getHitAudio() {
-		return create("sfx/hit.wav");
+		return create("sfx/hit.mp3");
 	}
 
 	public static AudioClip getWingAudio() {
-		return create("sfx/wing.wav");
+		return create("sfx/wing.mp3");
 	}
 
 	public static AudioClip getPointAudio() {
-		return create("sfx/point.wav");
+		return create("sfx/point.mp3");
 	}
 	
 }
