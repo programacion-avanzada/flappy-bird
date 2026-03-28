@@ -31,7 +31,7 @@ public class GameObjectBuilder {
 		if (this.rootNode == null) {
 			this.rootNode = rootNode;
 			rootNode.getChildren().add(objectsGroup);
-			//rootNode.getChildren().add(collidersGroup);
+			rootNode.getChildren().add(collidersGroup);
 		} else {
 			throw new RuntimeException("Root node already configured");
 		}
