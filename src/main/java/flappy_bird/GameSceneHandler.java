@@ -47,6 +47,7 @@ public class GameSceneHandler extends SceneHandler {
 		super(g);
 	}
 
+	@Override
 	protected void defineEventHandlers() {
 		mouseEventHandler = new EventHandler<MouseEvent>() {
 			@Override

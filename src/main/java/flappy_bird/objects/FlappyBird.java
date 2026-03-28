@@ -99,10 +99,10 @@ public class FlappyBird extends GameObject implements Updatable, Renderable, Col
 		Color[] yellow = { Color.rgb(252, 56, 0), Color.rgb(252, 216, 132), Color.rgb(224, 128, 44),
 				Color.rgb(249, 183, 51), Color.rgb(250, 215, 140) };
 
-		Color[][] posibleColos = { original, blue, yellow };
+		Color[][] possibleColors = { original, blue, yellow };
 
 		int randomIndex = (int) Math.floor(Math.random() * 3);
-		Color[] colorRandom = posibleColos[randomIndex];
+		Color[] colorRandom = possibleColors[randomIndex];
 
 		imageUp = Utils.reColor(imageUp, original, colorRandom);
 		imageBase = Utils.reColor(imageBase, original, colorRandom);

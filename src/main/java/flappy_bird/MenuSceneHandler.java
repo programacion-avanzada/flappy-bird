@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.application.Platform;
 import javafx.scene.input.MouseEvent;
 
 public class MenuSceneHandler extends SceneHandler {
@@ -26,6 +27,7 @@ public class MenuSceneHandler extends SceneHandler {
 		super(g);
 	}
 
+	@Override
 	protected void defineEventHandlers() {
 		mouseEventHandler = new EventHandler<MouseEvent>() {
 			@Override
@@ -48,7 +50,7 @@ public class MenuSceneHandler extends SceneHandler {
 					break;
 				case Q:
 				case ESCAPE:
-					System.exit(0);
+					Platform.exit();
 					break;
 				default:
 					break;
